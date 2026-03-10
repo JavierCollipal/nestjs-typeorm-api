@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { Task, TaskStatus, TaskPriority } from './entities/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
+import { TaskNotFoundException } from '../common/exceptions/task-not-found.exception';
 
 describe('TasksService', () => {
   let service: TasksService;
@@ -162,11 +162,11 @@ describe('TasksService', () => {
       expect(result).toEqual(mockTask);
     });
 
-    it('should throw NotFoundException if task not found', async () => {
+    it('should throw TaskNotFoundException if task not found', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
       await expect(service.findOne('non-existent-id')).rejects.toThrow(
-        NotFoundException,
+        TaskNotFoundException,
       );
       await expect(service.findOne('non-existent-id')).rejects.toThrow(
         'Task with ID "non-existent-id" not found',
@@ -196,12 +196,12 @@ describe('TasksService', () => {
       expect(result.description).toBe(updateTaskDto.description);
     });
 
-    it('should throw NotFoundException if task not found', async () => {
+    it('should throw TaskNotFoundException if task not found', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
       await expect(
         service.update('non-existent-id', { title: 'New Title' }),
-      ).rejects.toThrow(NotFoundException);
+      ).rejects.toThrow(TaskNotFoundException);
     });
   });
 
@@ -222,12 +222,12 @@ describe('TasksService', () => {
       expect(mockRepository.save).toHaveBeenCalled();
     });
 
-    it('should throw NotFoundException if task not found', async () => {
+    it('should throw TaskNotFoundException if task not found', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
       await expect(
         service.updateStatus('non-existent-id', { status: TaskStatus.DONE }),
-      ).rejects.toThrow(NotFoundException);
+      ).rejects.toThrow(TaskNotFoundException);
     });
   });
 
@@ -244,11 +244,11 @@ describe('TasksService', () => {
       expect(mockRepository.remove).toHaveBeenCalledWith(mockTask);
     });
 
-    it('should throw NotFoundException if task not found', async () => {
+    it('should throw TaskNotFoundException if task not found', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
       await expect(service.remove('non-existent-id')).rejects.toThrow(
-        NotFoundException,
+        TaskNotFoundException,
       );
     });
   });
