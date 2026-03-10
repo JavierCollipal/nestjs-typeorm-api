@@ -182,10 +182,363 @@ Returns a simple health check message.
 "Hello World!"
 ```
 
-### Example cURL:
+**Example cURL:**
 
 ```bash
 curl http://localhost:3000
+```
+
+---
+
+### Tasks API
+
+Complete task management API with CRUD operations, filtering, and status updates.
+
+#### Task Entity Schema
+
+```typescript
+{
+  id: string;           // UUID
+  title: string;        // Max 200 characters
+  description: string;  // Text
+  status: 'pending' | 'in_progress' | 'done';
+  priority: 'low' | 'medium' | 'high';
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+---
+
+#### 1. Create Task
+
+**POST** `/tasks`
+
+Create a new task with title and description. Status and priority are optional (default: `pending` and `medium`).
+
+**Request Body:**
+
+```json
+{
+  "title": "Complete project documentation",
+  "description": "Write comprehensive API documentation",
+  "status": "pending",       // Optional: pending | in_progress | done
+  "priority": "high"         // Optional: low | medium | high
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Complete project documentation",
+  "description": "Write comprehensive API documentation",
+  "status": "pending",
+  "priority": "high",
+  "createdAt": "2026-03-09T10:30:00.000Z",
+  "updatedAt": "2026-03-09T10:30:00.000Z"
+}
+```
+
+**Example cURL:**
+
+```bash
+curl -X POST http://localhost:3000/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Complete project documentation",
+    "description": "Write comprehensive API documentation",
+    "priority": "high"
+  }'
+```
+
+**Validation Rules:**
+- `title`: Required, max 200 characters
+- `description`: Required
+- `status`: Optional, must be one of: `pending`, `in_progress`, `done`
+- `priority`: Optional, must be one of: `low`, `medium`, `high`
+
+---
+
+#### 2. List All Tasks (with Filters)
+
+**GET** `/tasks`
+
+Retrieve all tasks with optional filtering by status and/or priority.
+
+**Query Parameters:**
+
+| Parameter | Type | Required | Values |
+|-----------|------|----------|--------|
+| status | string | No | `pending`, `in_progress`, `done` |
+| priority | string | No | `low`, `medium`, `high` |
+
+**Response (200 OK):**
+
+```json
+[
+  {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "title": "Complete project documentation",
+    "description": "Write comprehensive API documentation",
+    "status": "in_progress",
+    "priority": "high",
+    "createdAt": "2026-03-09T10:30:00.000Z",
+    "updatedAt": "2026-03-09T11:00:00.000Z"
+  },
+  {
+    "id": "223e4567-e89b-12d3-a456-426614174001",
+    "title": "Fix bug in authentication",
+    "description": "Resolve JWT token expiration issue",
+    "status": "pending",
+    "priority": "high",
+    "createdAt": "2026-03-09T09:00:00.000Z",
+    "updatedAt": "2026-03-09T09:00:00.000Z"
+  }
+]
+```
+
+**Example cURL:**
+
+```bash
+# Get all tasks
+curl http://localhost:3000/tasks
+
+# Filter by status
+curl "http://localhost:3000/tasks?status=pending"
+
+# Filter by priority
+curl "http://localhost:3000/tasks?priority=high"
+
+# Filter by both
+curl "http://localhost:3000/tasks?status=in_progress&priority=high"
+```
+
+---
+
+#### 3. Get Task by ID
+
+**GET** `/tasks/:id`
+
+Retrieve a single task by its UUID.
+
+**Path Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| id | string | Task UUID |
+
+**Response (200 OK):**
+
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Complete project documentation",
+  "description": "Write comprehensive API documentation",
+  "status": "in_progress",
+  "priority": "high",
+  "createdAt": "2026-03-09T10:30:00.000Z",
+  "updatedAt": "2026-03-09T11:00:00.000Z"
+}
+```
+
+**Error Response (404 Not Found):**
+
+```json
+{
+  "statusCode": 404,
+  "message": "Task with ID \"123e4567-e89b-12d3-a456-426614174999\" not found",
+  "error": "Not Found"
+}
+```
+
+**Example cURL:**
+
+```bash
+curl http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000
+```
+
+---
+
+#### 4. Update Task
+
+**PATCH** `/tasks/:id`
+
+Update any field(s) of a task. All fields are optional.
+
+**Path Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| id | string | Task UUID |
+
+**Request Body (partial update):**
+
+```json
+{
+  "title": "Updated title",
+  "description": "Updated description",
+  "status": "in_progress",
+  "priority": "low"
+}
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Updated title",
+  "description": "Updated description",
+  "status": "in_progress",
+  "priority": "low",
+  "createdAt": "2026-03-09T10:30:00.000Z",
+  "updatedAt": "2026-03-09T12:00:00.000Z"
+}
+```
+
+**Example cURL:**
+
+```bash
+# Update multiple fields
+curl -X PATCH http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Updated title",
+    "status": "in_progress"
+  }'
+
+# Update single field
+curl -X PATCH http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000 \
+  -H "Content-Type: application/json" \
+  -d '{"priority": "low"}'
+```
+
+---
+
+#### 5. Update Task Status
+
+**PATCH** `/tasks/:id/status`
+
+Update only the status of a task. Dedicated endpoint for status changes.
+
+**Path Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| id | string | Task UUID |
+
+**Request Body:**
+
+```json
+{
+  "status": "done"
+}
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Complete project documentation",
+  "description": "Write comprehensive API documentation",
+  "status": "done",
+  "priority": "high",
+  "createdAt": "2026-03-09T10:30:00.000Z",
+  "updatedAt": "2026-03-09T13:00:00.000Z"
+}
+```
+
+**Example cURL:**
+
+```bash
+# Mark as in progress
+curl -X PATCH http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000/status \
+  -H "Content-Type: application/json" \
+  -d '{"status": "in_progress"}'
+
+# Mark as done
+curl -X PATCH http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000/status \
+  -H "Content-Type: application/json" \
+  -d '{"status": "done"}'
+```
+
+**Validation:**
+- `status` is required
+- Must be one of: `pending`, `in_progress`, `done`
+
+---
+
+#### 6. Delete Task
+
+**DELETE** `/tasks/:id`
+
+Permanently delete a task.
+
+**Path Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| id | string | Task UUID |
+
+**Response (204 No Content)**
+
+Empty response body.
+
+**Error Response (404 Not Found):**
+
+```json
+{
+  "statusCode": 404,
+  "message": "Task with ID \"123e4567-e89b-12d3-a456-426614174999\" not found",
+  "error": "Not Found"
+}
+```
+
+**Example cURL:**
+
+```bash
+curl -X DELETE http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000
+```
+
+---
+
+### Error Responses
+
+All endpoints return consistent error responses:
+
+**400 Bad Request** - Validation errors
+
+```json
+{
+  "statusCode": 400,
+  "message": [
+    "title should not be empty",
+    "description should not be empty"
+  ],
+  "error": "Bad Request"
+}
+```
+
+**404 Not Found** - Resource not found
+
+```json
+{
+  "statusCode": 404,
+  "message": "Task with ID \"xxx\" not found",
+  "error": "Not Found"
+}
+```
+
+**500 Internal Server Error** - Server errors
+
+```json
+{
+  "statusCode": 500,
+  "message": "Internal server error"
+}
 ```
 
 ## Database Migrations
