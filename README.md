@@ -1,158 +1,155 @@
 # NestJS TypeORM API
 
-A production-ready NestJS API with TypeORM integration, complete with documentation, tests, and best practices.
+API REST de gestión de tareas con NestJS, TypeORM y PostgreSQL. Lista para producción con manejo de errores profesional, tests y documentación completa.
 
-## Table of Contents
+## Tabla de Contenidos
 
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Running the Application](#running-the-application)
+- [Requisitos Previos](#requisitos-previos)
+- [Instalación](#instalación)
+- [Configuración](#configuración)
+- [Ejecutar la Aplicación](#ejecutar-la-aplicación)
 - [Testing](#testing)
-- [Project Structure](#project-structure)
-- [API Documentation](#api-documentation)
-- [Database Migrations](#database-migrations)
-- [Additional Documentation](#additional-documentation)
+- [Documentación de la API](#documentación-de-la-api)
+- [Documentación Adicional](#documentación-adicional)
 
-## Prerequisites
+## Requisitos Previos
 
-Before you begin, ensure you have the following installed:
+- **Node.js** (v18 o superior) - [Descargar](https://nodejs.org/)
+- **npm** (viene con Node.js)
+- **PostgreSQL** (v14 o superior) - [Descargar](https://www.postgresql.org/download/)
+- **Docker** (opcional, recomendado) - [Descargar](https://www.docker.com/)
+- **Git** - [Descargar](https://git-scm.com/)
 
-- **Node.js** (v18 or higher) - [Download](https://nodejs.org/)
-- **npm** (comes with Node.js)
-- **PostgreSQL** (v14 or higher) - [Download](https://www.postgresql.org/download/)
-- **Git** - [Download](https://git-scm.com/)
+## Instalación
 
-## Installation
-
-1. Clone the repository:
+1. Clonar el repositorio:
 
 ```bash
 git clone https://github.com/JavierCollipal/nestjs-typeorm-api.git
 cd nestjs-typeorm-api
 ```
 
-2. Install dependencies:
+2. Instalar dependencias:
 
 ```bash
 npm install
 ```
 
-## Configuration
+## Configuración
 
-### Option 1: Using Docker (Recommended)
+### Opción 1: Usando Docker (Recomendado)
 
-The easiest way to get started is using Docker for PostgreSQL.
+La forma más fácil de comenzar es usando Docker para PostgreSQL.
 
-1. Start PostgreSQL with Docker Compose:
+1. Iniciar PostgreSQL con Docker Compose:
 
 ```bash
 docker-compose up -d
 ```
 
-This will start a PostgreSQL container with the following default credentials:
+Esto iniciará un contenedor PostgreSQL con las siguientes credenciales por defecto:
 - Host: `localhost`
-- Port: `5432`
-- Username: `postgres`
-- Password: `postgres`
-- Database: `nestjs_typeorm_db`
+- Puerto: `5432`
+- Usuario: `postgres`
+- Contraseña: `postgres`
+- Base de datos: `nestjs_typeorm_db`
 
-2. Create a `.env` file (already configured for Docker):
+2. Crear archivo `.env` (ya está configurado para Docker):
 
 ```bash
 cp .env.example .env
 ```
 
-The default `.env` file is already configured to work with the Docker setup.
+El archivo `.env` por defecto ya está configurado para trabajar con Docker.
 
-3. Verify PostgreSQL is running:
+3. Verificar que PostgreSQL está ejecutándose:
 
 ```bash
 docker ps
 ```
 
-You should see the `nestjs-postgres` container running and healthy.
+Deberías ver el contenedor `nestjs-postgres` ejecutándose y saludable.
 
-4. To stop the database:
+4. Para detener la base de datos:
 
 ```bash
 docker-compose down
 ```
 
-5. To reset the database (delete all data):
+5. Para resetear la base de datos (eliminar todos los datos):
 
 ```bash
 docker-compose down -v
 docker-compose up -d
 ```
 
-### Option 2: Using Local PostgreSQL
+### Opción 2: Usando PostgreSQL Local
 
-If you prefer to use a local PostgreSQL installation:
+Si prefieres usar una instalación local de PostgreSQL:
 
-1. Create a `.env` file:
+1. Crear archivo `.env`:
 
 ```bash
 cp .env.example .env
 ```
 
-2. Update the `.env` file with your database credentials:
+2. Actualizar el archivo `.env` con tus credenciales:
 
 ```env
-# Database Configuration
+# Configuración de Base de Datos
 DB_HOST=localhost
 DB_PORT=5432
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
+DB_USERNAME=tu_usuario
+DB_PASSWORD=tu_contraseña
 DB_NAME=nestjs_typeorm_db
 
-# Application Configuration
+# Configuración de Aplicación
 PORT=3000
 NODE_ENV=development
 ```
 
-3. Create the PostgreSQL database:
+3. Crear la base de datos en PostgreSQL:
 
 ```bash
-# Connect to PostgreSQL
+# Conectar a PostgreSQL
 psql -U postgres
 
-# Create database
+# Crear base de datos
 CREATE DATABASE nestjs_typeorm_db;
 
-# Exit psql
+# Salir de psql
 \q
 ```
 
-## Running the Application
+## Ejecutar la Aplicación
 
-### Development Mode
+### Modo Desarrollo
 
-Run the application in watch mode (auto-reloads on file changes):
+Ejecutar la aplicación en modo watch (recarga automática con cambios):
 
 ```bash
 npm run start:dev
 ```
 
-The API will be available at `http://localhost:3000`
+La API estará disponible en `http://localhost:3000`
 
-### Production Mode
+### Modo Producción
 
-1. Build the application:
+1. Construir la aplicación:
 
 ```bash
 npm run build
 ```
 
-2. Start the production server:
+2. Iniciar el servidor de producción:
 
 ```bash
 npm run start:prod
 ```
 
-### Standard Mode
+### Modo Estándar
 
-Run the application without watch mode:
+Ejecutar la aplicación sin modo watch:
 
 ```bash
 npm run start
@@ -160,103 +157,55 @@ npm run start
 
 ## Testing
 
-### Unit Tests
+### Tests Unitarios
 
-Run all unit tests:
+Ejecutar todos los tests unitarios:
 
 ```bash
 npm run test
 ```
 
-Run tests in watch mode:
+Ejecutar tests en modo watch:
 
 ```bash
 npm run test:watch
 ```
 
-### End-to-End (E2E) Tests
+### Tests E2E (End-to-End)
 
-E2E tests require a running PostgreSQL database. Make sure to start the database first:
+Los tests E2E requieren una base de datos PostgreSQL ejecutándose. Asegúrate de iniciar la base de datos primero:
 
 ```bash
-# Start PostgreSQL with Docker
+# Iniciar PostgreSQL con Docker
 docker-compose up -d
 
-# Run E2E tests
+# Ejecutar tests E2E
 npm run test:e2e
 ```
 
-**Test Results:**
-- ✅ 29 E2E tests covering all API endpoints
-- ✅ Tests validation, filtering, error handling, and CRUD operations
-- ✅ Verified against real PostgreSQL database
+**Resultados de Tests:**
+- ✅ 24 tests unitarios (service + controller)
+- ✅ 29 tests E2E cubriendo todos los endpoints de la API
+- ✅ Validaciones, filtros, manejo de errores y operaciones CRUD
+- ✅ Verificado contra base de datos PostgreSQL real
 
-### Test Coverage
+### Cobertura de Tests
 
-Generate test coverage report:
+Generar reporte de cobertura:
 
 ```bash
 npm run test:cov
 ```
 
-The coverage report will be generated in the `coverage/` directory.
+El reporte se generará en el directorio `coverage/`.
 
-## Project Structure
+## Documentación de la API
 
-```
-nestjs-typeorm-api/
-├── src/
-│   ├── tasks/                   # Tasks module
-│   │   ├── dto/                 # Data Transfer Objects
-│   │   │   ├── create-task.dto.ts
-│   │   │   ├── update-task.dto.ts
-│   │   │   ├── filter-task.dto.ts
-│   │   │   └── update-status.dto.ts
-│   │   ├── entities/            # TypeORM entities
-│   │   │   └── task.entity.ts
-│   │   ├── tasks.controller.ts  # Tasks API endpoints
-│   │   ├── tasks.controller.spec.ts  # Controller unit tests
-│   │   ├── tasks.service.ts     # Business logic
-│   │   ├── tasks.service.spec.ts     # Service unit tests
-│   │   └── tasks.module.ts      # Tasks module definition
-│   ├── app.controller.ts        # Main application controller
-│   ├── app.module.ts            # Root module with TypeORM config
-│   ├── app.service.ts           # Main application service
-│   └── main.ts                  # Application entry point
-├── test/
-│   ├── app.e2e-spec.ts          # App E2E tests
-│   ├── tasks.e2e-spec.ts        # Tasks E2E tests (30+ test cases)
-│   └── jest-e2e.json            # E2E Jest configuration
-├── .env                         # Environment variables (not in git)
-├── .env.example                 # Environment variables template
-├── .gitignore                   # Git ignore rules
-├── .prettierrc                  # Prettier configuration
-├── answers.md                   # Theoretical answers
-├── architecture.md              # Architecture analysis
-├── docker-compose.yml           # PostgreSQL Docker setup
-├── eslint.config.mjs            # ESLint configuration
-├── nest-cli.json                # Nest CLI configuration
-├── package.json                 # Project dependencies
-├── README.md                    # This file
-├── tsconfig.build.json          # TypeScript build configuration
-└── tsconfig.json                # TypeScript configuration
-```
-
-## API Documentation
-
-### Health Check Endpoint
+### Endpoint de Salud
 
 **GET** `/`
 
-Returns a simple health check message.
-
-**Response:**
-
-```json
-"Hello World!"
-```
-
-**Example cURL:**
+Retorna un mensaje simple de salud.
 
 ```bash
 curl http://localhost:3000
@@ -264,17 +213,17 @@ curl http://localhost:3000
 
 ---
 
-### Tasks API
+### API de Tareas
 
-Complete task management API with CRUD operations, filtering, and status updates.
+API completa de gestión de tareas con operaciones CRUD, filtros y actualización de estado.
 
-#### Task Entity Schema
+#### Esquema de Entidad Task
 
 ```typescript
 {
   id: string;           // UUID
-  title: string;        // Max 200 characters
-  description: string;  // Text
+  title: string;        // Máximo 200 caracteres
+  description: string;  // Texto
   status: 'pending' | 'in_progress' | 'done';
   priority: 'low' | 'medium' | 'high';
   createdAt: Date;
@@ -284,30 +233,30 @@ Complete task management API with CRUD operations, filtering, and status updates
 
 ---
 
-#### 1. Create Task
+#### 1. Crear Tarea
 
 **POST** `/tasks`
 
-Create a new task with title and description. Status and priority are optional (default: `pending` and `medium`).
+Crear una nueva tarea con título y descripción. Estado y prioridad son opcionales (por defecto: `pending` y `medium`).
 
-**Request Body:**
+**Body:**
 
 ```json
 {
-  "title": "Complete project documentation",
-  "description": "Write comprehensive API documentation",
-  "status": "pending",       // Optional: pending | in_progress | done
-  "priority": "high"         // Optional: low | medium | high
+  "title": "Completar documentación del proyecto",
+  "description": "Escribir documentación completa de la API",
+  "status": "pending",       // Opcional: pending | in_progress | done
+  "priority": "high"         // Opcional: low | medium | high
 }
 ```
 
-**Response (201 Created):**
+**Respuesta (201 Created):**
 
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
-  "title": "Complete project documentation",
-  "description": "Write comprehensive API documentation",
+  "title": "Completar documentación del proyecto",
+  "description": "Escribir documentación completa de la API",
   "status": "pending",
   "priority": "high",
   "createdAt": "2026-03-09T10:30:00.000Z",
@@ -315,109 +264,64 @@ Create a new task with title and description. Status and priority are optional (
 }
 ```
 
-**Example cURL:**
+**Ejemplo cURL:**
 
 ```bash
 curl -X POST http://localhost:3000/tasks \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Complete project documentation",
-    "description": "Write comprehensive API documentation",
+    "title": "Completar documentación del proyecto",
+    "description": "Escribir documentación completa de la API",
     "priority": "high"
   }'
 ```
 
-**Validation Rules:**
-- `title`: Required, max 200 characters
-- `description`: Required
-- `status`: Optional, must be one of: `pending`, `in_progress`, `done`
-- `priority`: Optional, must be one of: `low`, `medium`, `high`
-
 ---
 
-#### 2. List All Tasks (with Filters)
+#### 2. Listar Todas las Tareas (con Filtros)
 
 **GET** `/tasks`
 
-Retrieve all tasks with optional filtering by status and/or priority.
+Obtener todas las tareas con filtros opcionales por estado y/o prioridad.
 
-**Query Parameters:**
+**Parámetros de Query:**
 
-| Parameter | Type | Required | Values |
-|-----------|------|----------|--------|
+| Parámetro | Tipo | Requerido | Valores |
+|-----------|------|-----------|---------|
 | status | string | No | `pending`, `in_progress`, `done` |
 | priority | string | No | `low`, `medium`, `high` |
 
-**Response (200 OK):**
-
-```json
-[
-  {
-    "id": "123e4567-e89b-12d3-a456-426614174000",
-    "title": "Complete project documentation",
-    "description": "Write comprehensive API documentation",
-    "status": "in_progress",
-    "priority": "high",
-    "createdAt": "2026-03-09T10:30:00.000Z",
-    "updatedAt": "2026-03-09T11:00:00.000Z"
-  },
-  {
-    "id": "223e4567-e89b-12d3-a456-426614174001",
-    "title": "Fix bug in authentication",
-    "description": "Resolve JWT token expiration issue",
-    "status": "pending",
-    "priority": "high",
-    "createdAt": "2026-03-09T09:00:00.000Z",
-    "updatedAt": "2026-03-09T09:00:00.000Z"
-  }
-]
-```
-
-**Example cURL:**
+**Ejemplos cURL:**
 
 ```bash
-# Get all tasks
+# Todas las tareas
 curl http://localhost:3000/tasks
 
-# Filter by status
+# Filtrar por estado
 curl "http://localhost:3000/tasks?status=pending"
 
-# Filter by priority
+# Filtrar por prioridad
 curl "http://localhost:3000/tasks?priority=high"
 
-# Filter by both
+# Filtrar por ambos
 curl "http://localhost:3000/tasks?status=in_progress&priority=high"
 ```
 
 ---
 
-#### 3. Get Task by ID
+#### 3. Obtener Tarea por ID
 
 **GET** `/tasks/:id`
 
-Retrieve a single task by its UUID.
+Obtener una tarea específica por su UUID.
 
-**Path Parameters:**
+**Ejemplo cURL:**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | string | Task UUID |
-
-**Response (200 OK):**
-
-```json
-{
-  "id": "123e4567-e89b-12d3-a456-426614174000",
-  "title": "Complete project documentation",
-  "description": "Write comprehensive API documentation",
-  "status": "in_progress",
-  "priority": "high",
-  "createdAt": "2026-03-09T10:30:00.000Z",
-  "updatedAt": "2026-03-09T11:00:00.000Z"
-}
+```bash
+curl http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000
 ```
 
-**Error Response (404 Not Found):**
+**Respuesta de Error (404 Not Found):**
 
 ```json
 {
@@ -427,63 +331,37 @@ Retrieve a single task by its UUID.
 }
 ```
 
-**Example cURL:**
-
-```bash
-curl http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000
-```
-
 ---
 
-#### 4. Update Task
+#### 4. Actualizar Tarea
 
 **PATCH** `/tasks/:id`
 
-Update any field(s) of a task. All fields are optional.
+Actualizar cualquier campo(s) de una tarea. Todos los campos son opcionales.
 
-**Path Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | string | Task UUID |
-
-**Request Body (partial update):**
+**Body (actualización parcial):**
 
 ```json
 {
-  "title": "Updated title",
-  "description": "Updated description",
+  "title": "Título actualizado",
+  "description": "Descripción actualizada",
   "status": "in_progress",
   "priority": "low"
 }
 ```
 
-**Response (200 OK):**
-
-```json
-{
-  "id": "123e4567-e89b-12d3-a456-426614174000",
-  "title": "Updated title",
-  "description": "Updated description",
-  "status": "in_progress",
-  "priority": "low",
-  "createdAt": "2026-03-09T10:30:00.000Z",
-  "updatedAt": "2026-03-09T12:00:00.000Z"
-}
-```
-
-**Example cURL:**
+**Ejemplos cURL:**
 
 ```bash
-# Update multiple fields
+# Actualizar múltiples campos
 curl -X PATCH http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000 \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Updated title",
+    "title": "Título actualizado",
     "status": "in_progress"
   }'
 
-# Update single field
+# Actualizar un solo campo
 curl -X PATCH http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000 \
   -H "Content-Type: application/json" \
   -d '{"priority": "low"}'
@@ -491,19 +369,13 @@ curl -X PATCH http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000 \
 
 ---
 
-#### 5. Update Task Status
+#### 5. Actualizar Estado de Tarea
 
 **PATCH** `/tasks/:id/status`
 
-Update only the status of a task. Dedicated endpoint for status changes.
+Actualizar solo el estado de una tarea. Endpoint dedicado para cambios de estado.
 
-**Path Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | string | Task UUID |
-
-**Request Body:**
+**Body:**
 
 ```json
 {
@@ -511,67 +383,33 @@ Update only the status of a task. Dedicated endpoint for status changes.
 }
 ```
 
-**Response (200 OK):**
-
-```json
-{
-  "id": "123e4567-e89b-12d3-a456-426614174000",
-  "title": "Complete project documentation",
-  "description": "Write comprehensive API documentation",
-  "status": "done",
-  "priority": "high",
-  "createdAt": "2026-03-09T10:30:00.000Z",
-  "updatedAt": "2026-03-09T13:00:00.000Z"
-}
-```
-
-**Example cURL:**
+**Ejemplos cURL:**
 
 ```bash
-# Mark as in progress
+# Marcar como en progreso
 curl -X PATCH http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000/status \
   -H "Content-Type: application/json" \
   -d '{"status": "in_progress"}'
 
-# Mark as done
+# Marcar como completada
 curl -X PATCH http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000/status \
   -H "Content-Type: application/json" \
   -d '{"status": "done"}'
 ```
 
-**Validation:**
-- `status` is required
-- Must be one of: `pending`, `in_progress`, `done`
-
 ---
 
-#### 6. Delete Task
+#### 6. Eliminar Tarea
 
 **DELETE** `/tasks/:id`
 
-Permanently delete a task.
+Eliminar permanentemente una tarea.
 
-**Path Parameters:**
+**Respuesta (204 No Content)**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | string | Task UUID |
+Cuerpo de respuesta vacío.
 
-**Response (204 No Content)**
-
-Empty response body.
-
-**Error Response (404 Not Found):**
-
-```json
-{
-  "statusCode": 404,
-  "message": "Task with ID \"123e4567-e89b-12d3-a456-426614174999\" not found",
-  "error": "Not Found"
-}
-```
-
-**Example cURL:**
+**Ejemplo cURL:**
 
 ```bash
 curl -X DELETE http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000
@@ -579,11 +417,11 @@ curl -X DELETE http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000
 
 ---
 
-### Error Responses
+### Respuestas de Error
 
-All endpoints return consistent error responses:
+Todos los endpoints retornan respuestas de error consistentes:
 
-**400 Bad Request** - Validation errors
+**400 Bad Request** - Errores de validación
 
 ```json
 {
@@ -596,7 +434,7 @@ All endpoints return consistent error responses:
 }
 ```
 
-**404 Not Found** - Resource not found
+**404 Not Found** - Recurso no encontrado
 
 ```json
 {
@@ -606,113 +444,127 @@ All endpoints return consistent error responses:
 }
 ```
 
-**500 Internal Server Error** - Server errors
+**500 Internal Server Error** - Errores del servidor
 
 ```json
 {
   "statusCode": 500,
-  "message": "Internal server error"
+  "message": "Database error during task creation"
 }
 ```
 
-## Database Migrations
+## Estructura del Proyecto
 
-TypeORM migrations help manage database schema changes:
-
-### Generate a new migration:
-
-```bash
-npm run typeorm migration:generate -- -n MigrationName
+```
+nestjs-typeorm-api/
+├── src/
+│   ├── common/                  # Excepciones personalizadas
+│   │   └── exceptions/
+│   │       ├── task-not-found.exception.ts
+│   │       └── database.exception.ts
+│   ├── tasks/                   # Módulo de tareas
+│   │   ├── dto/                 # Data Transfer Objects
+│   │   │   ├── create-task.dto.ts
+│   │   │   ├── update-task.dto.ts
+│   │   │   ├── filter-task.dto.ts
+│   │   │   └── update-status.dto.ts
+│   │   ├── entities/            # Entidades TypeORM
+│   │   │   └── task.entity.ts
+│   │   ├── tasks.controller.ts  # Endpoints de la API
+│   │   ├── tasks.service.ts     # Lógica de negocio con try-catch
+│   │   └── tasks.module.ts
+│   ├── app.module.ts            # Módulo raíz con configuración TypeORM
+│   └── main.ts                  # Punto de entrada
+├── test/
+│   ├── tasks.e2e-spec.ts        # 29 tests E2E
+│   └── jest-e2e.json
+├── .env                         # Variables de entorno (no en git)
+├── .env.example                 # Template de variables de entorno
+├── docker-compose.yml           # PostgreSQL Docker
+├── answers.md                   # Respuestas teóricas
+├── architecture.md              # Análisis de arquitectura
+├── ERROR_HANDLING.md            # Guía de manejo de errores
+└── VERIFICATION.md              # Reporte de verificación
 ```
 
-### Run migrations:
+## Scripts Disponibles
 
-```bash
-npm run typeorm migration:run
-```
-
-### Revert last migration:
-
-```bash
-npm run typeorm migration:revert
-```
-
-## Additional Documentation
-
-- **[answers.md](./answers.md)** - Theoretical answers and explanations
-- **[architecture.md](./architecture.md)** - System architecture analysis and design decisions
-
-## Scripts Reference
-
-| Script | Description |
+| Script | Descripción |
 |--------|-------------|
-| `npm run start` | Run application in standard mode |
-| `npm run start:dev` | Run application in watch mode |
-| `npm run start:prod` | Run application in production mode |
-| `npm run build` | Build the application |
-| `npm run test` | Run unit tests |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run test:cov` | Generate test coverage report |
-| `npm run test:e2e` | Run end-to-end tests |
-| `npm run lint` | Lint the codebase |
-| `npm run format` | Format code with Prettier |
+| `npm run start` | Ejecutar aplicación en modo estándar |
+| `npm run start:dev` | Ejecutar aplicación en modo watch |
+| `npm run start:prod` | Ejecutar aplicación en modo producción |
+| `npm run build` | Construir la aplicación |
+| `npm run test` | Ejecutar tests unitarios |
+| `npm run test:watch` | Ejecutar tests en modo watch |
+| `npm run test:cov` | Generar reporte de cobertura |
+| `npm run test:e2e` | Ejecutar tests E2E |
+| `npm run lint` | Lint del código |
+| `npm run format` | Formatear código con Prettier |
 
-## Troubleshooting
+## Solución de Problemas
 
-### Database Connection Issues
+### Problemas de Conexión a Base de Datos
 
-If you encounter database connection errors:
+Si encuentras errores de conexión:
 
-1. Verify PostgreSQL is running:
+1. Verificar que PostgreSQL está ejecutándose:
    ```bash
-   # Windows
-   pg_ctl status
+   # Con Docker
+   docker ps
 
-   # Linux/Mac
+   # Linux/Mac (instalación local)
    sudo systemctl status postgresql
    ```
 
-2. Check database credentials in `.env` file
+2. Verificar credenciales en archivo `.env`
 
-3. Ensure the database exists:
+3. Asegurarse de que la base de datos existe:
    ```bash
    psql -U postgres -l
    ```
 
-### Port Already in Use
+### Puerto Ya en Uso
 
-If port 3000 is already in use, change the `PORT` value in your `.env` file.
+Si el puerto 3000 ya está en uso, cambiar el valor de `PORT` en tu archivo `.env`.
 
-## Technology Stack
+## Stack Tecnológico
 
 - **Framework:** NestJS v11
-- **Language:** TypeScript
+- **Lenguaje:** TypeScript
 - **ORM:** TypeORM
-- **Database:** PostgreSQL
+- **Base de Datos:** PostgreSQL
 - **Testing:** Jest
-- **Code Quality:** ESLint + Prettier
+- **Calidad de Código:** ESLint + Prettier
 
-## License
+## Características
 
-This project is [MIT licensed](LICENSE).
+✅ **Arquitectura Modular** - Separación clara de responsabilidades
+✅ **Manejo de Errores Profesional** - Try-catch en capa de servicios, logging contextual
+✅ **Validación Robusta** - DTOs con class-validator
+✅ **Testing Completo** - 24 tests unitarios + 29 tests E2E
+✅ **Docker Ready** - Configuración de PostgreSQL con Docker Compose
+✅ **TypeScript Strict** - Type safety en todo el proyecto
+✅ **Excepciones Personalizadas** - Mensajes de error amigables
 
-## Support
+## Documentación Adicional
 
-For questions or issues, please:
-- Open an issue on [GitHub](https://github.com/JavierCollipal/nestjs-typeorm-api/issues)
-- Check the [NestJS Documentation](https://docs.nestjs.com)
-- Review the [TypeORM Documentation](https://typeorm.io)
+- **[ERROR_HANDLING.md](./ERROR_HANDLING.md)** - Guía completa de manejo de errores (try-catch, logging, excepciones personalizadas)
+- **[VERIFICATION.md](./VERIFICATION.md)** - Reporte de verificación con ejemplos de curl y respuestas
+- **[answers.md](./answers.md)** - Respuestas teóricas y explicaciones
+- **[architecture.md](./architecture.md)** - Análisis de arquitectura y decisiones de diseño
 
-## Contributing
+## Licencia
 
-Contributions are welcome! Please follow these steps:
+Este proyecto está bajo licencia [MIT](LICENSE).
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## Soporte
+
+Para preguntas o problemas:
+- Abrir un issue en [GitHub](https://github.com/JavierCollipal/nestjs-typeorm-api/issues)
+- Revisar la [Documentación de NestJS](https://docs.nestjs.com)
+- Revisar la [Documentación de TypeORM](https://typeorm.io)
 
 ---
 
-**Built with NestJS** - A progressive Node.js framework for building efficient and scalable server-side applications.
+**Construido con NestJS** - Un framework progresivo de Node.js para construir aplicaciones del lado del servidor eficientes y escalables.
