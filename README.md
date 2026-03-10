@@ -40,7 +40,57 @@ npm install
 
 ## Configuration
 
-1. Create a `.env` file in the root directory by copying the example file:
+### Option 1: Using Docker (Recommended)
+
+The easiest way to get started is using Docker for PostgreSQL.
+
+1. Start PostgreSQL with Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+This will start a PostgreSQL container with the following default credentials:
+- Host: `localhost`
+- Port: `5432`
+- Username: `postgres`
+- Password: `postgres`
+- Database: `nestjs_typeorm_db`
+
+2. Create a `.env` file (already configured for Docker):
+
+```bash
+cp .env.example .env
+```
+
+The default `.env` file is already configured to work with the Docker setup.
+
+3. Verify PostgreSQL is running:
+
+```bash
+docker ps
+```
+
+You should see the `nestjs-postgres` container running and healthy.
+
+4. To stop the database:
+
+```bash
+docker-compose down
+```
+
+5. To reset the database (delete all data):
+
+```bash
+docker-compose down -v
+docker-compose up -d
+```
+
+### Option 2: Using Local PostgreSQL
+
+If you prefer to use a local PostgreSQL installation:
+
+1. Create a `.env` file:
 
 ```bash
 cp .env.example .env
@@ -126,11 +176,20 @@ npm run test:watch
 
 ### End-to-End (E2E) Tests
 
-Run E2E tests:
+E2E tests require a running PostgreSQL database. Make sure to start the database first:
 
 ```bash
+# Start PostgreSQL with Docker
+docker-compose up -d
+
+# Run E2E tests
 npm run test:e2e
 ```
+
+**Test Results:**
+- ✅ 29 E2E tests covering all API endpoints
+- ✅ Tests validation, filtering, error handling, and CRUD operations
+- ✅ Verified against real PostgreSQL database
 
 ### Test Coverage
 
@@ -147,12 +206,26 @@ The coverage report will be generated in the `coverage/` directory.
 ```
 nestjs-typeorm-api/
 ├── src/
-│   ├── app.controller.ts       # Main application controller
-│   ├── app.module.ts            # Root module
+│   ├── tasks/                   # Tasks module
+│   │   ├── dto/                 # Data Transfer Objects
+│   │   │   ├── create-task.dto.ts
+│   │   │   ├── update-task.dto.ts
+│   │   │   ├── filter-task.dto.ts
+│   │   │   └── update-status.dto.ts
+│   │   ├── entities/            # TypeORM entities
+│   │   │   └── task.entity.ts
+│   │   ├── tasks.controller.ts  # Tasks API endpoints
+│   │   ├── tasks.controller.spec.ts  # Controller unit tests
+│   │   ├── tasks.service.ts     # Business logic
+│   │   ├── tasks.service.spec.ts     # Service unit tests
+│   │   └── tasks.module.ts      # Tasks module definition
+│   ├── app.controller.ts        # Main application controller
+│   ├── app.module.ts            # Root module with TypeORM config
 │   ├── app.service.ts           # Main application service
 │   └── main.ts                  # Application entry point
 ├── test/
-│   ├── app.e2e-spec.ts          # E2E tests
+│   ├── app.e2e-spec.ts          # App E2E tests
+│   ├── tasks.e2e-spec.ts        # Tasks E2E tests (30+ test cases)
 │   └── jest-e2e.json            # E2E Jest configuration
 ├── .env                         # Environment variables (not in git)
 ├── .env.example                 # Environment variables template
@@ -160,6 +233,7 @@ nestjs-typeorm-api/
 ├── .prettierrc                  # Prettier configuration
 ├── answers.md                   # Theoretical answers
 ├── architecture.md              # Architecture analysis
+├── docker-compose.yml           # PostgreSQL Docker setup
 ├── eslint.config.mjs            # ESLint configuration
 ├── nest-cli.json                # Nest CLI configuration
 ├── package.json                 # Project dependencies
